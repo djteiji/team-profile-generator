@@ -8,9 +8,8 @@ const fs = require('fs');
 
 const teamArr = [];
 
-const managerQuestions = () => [
-   inquirer
-   .prompt ([
+const managerQuestions = () => {
+   return inquirer.prompt ([
        {
            type: 'input',
            name: 'name',
@@ -41,71 +40,152 @@ const managerQuestions = () => [
        teamArr.push(manager);
        console.log(manager);
 
-       employeeInfo();
+    //    employeeInfo();
 
    })
-];
+};
 
-const employeeInfo = () => [
+const addMembers = () => {
+    console.log(`
+====================
+Add New Team Members
+====================
+`);
+
+return inquirer.prompt ([
+    {
+        type: 'list',
+        name: 'role',
+        message: "What is this Team Member's role?",
+        choices: ['Engineer', 'Intern']
+    },
     
-    inquirer
-    .prompt ([
-        {
-            type: 'list',
-            name: 'role',
-            message: "What is this employee's role?",
-            choices: ['Engineer', 'Intern']
-        },
-  ]).then(choices => {
-    if ('Engineer') {
-        
-        engineerInfo();
+    {
+        type: 'input',
+        name: 'name',
+        message: "What is your team member's name?"
+    },
+
+    {
+        type: 'input',
+        name: 'id',
+        message: "Enter your Team Member's id number"
+    },
+
+    {
+        type: 'input',
+        name: 'email',
+        message: "Enter your Team Member's email"
+    },
+
+    {
+        type: 'input',
+        name: 'github',
+        message: "What is this Team Member's GitHub username?",
+        when: (input) => input.role === "Engineer",
+    },
+
+    {
+        type: 'input',
+        name: 'school',
+        message: "What is this Team Member's school?",
+        when: (input) => input.role === 'Intern',
+    },
+
+    {
+        type: 'confirm',
+        name: 'confirmAddMember',
+        message: 'Would you like to add additional Team Members?',
+        default: false
     }
-    // else {
-    //     internInfo();
-    // }
+
+])
+  .then(memberData => {
+
+    let { name, id, email, role, github, school, confirmAddMember } = memberData;
+    let member;
+
+    if (role === 'Engineer') {
+        member = new Engineer (name, id, email, github);
+
+        console.log(member);
+
+    } else if (role === 'Intern') {
+        member = new Intern (name, id, email, school);
+
+        console.log(member);
+    }
+
+    teamArr.push(member);
+
+    if (confirmAddMember) {
+        return addMembers(teamArr);
+    } else {
+        return teamArr;
+    }
+ })
+};
+
+// const employeeInfo = () => [
     
-  })
-];
-
-const engineerInfo = () => [
-    inquirer
-    .prompt ([
+//     inquirer
+//     .prompt ([
+//         {
+//             type: 'list',
+//             name: 'role',
+//             message: "What is this employee's role?",
+//             choices: ['Engineer', 'Intern']
+//         },
+//   ]).then(choices => {
+//     if ('Engineer') {
         
-        {
-            type: 'input',
-            name: 'name',
-            message: "What is your engineer's name?"
-        },
+//         engineerInfo();
+//     }
+//     // else {
+//     //     internInfo();
+//     // }
+    
+//   })
+// ];
 
-        {
-            type: 'input',
-            name: 'id',
-            message: "Enter your Engineer's id number"
-        },
+// const engineerInfo = () => [
+//     inquirer
+//     .prompt ([
+        
+//         {
+//             type: 'input',
+//             name: 'name',
+//             message: "What is your engineer's name?"
+//         },
 
-        {
-            type: 'input',
-            name: 'email',
-            message: "Enter your Engineer's email"
-        },
+//         {
+//             type: 'input',
+//             name: 'id',
+//             message: "Enter your Engineer's id number"
+//         },
 
-        {
-            type: 'input',
-            name: 'userName',
-            message: "Enter your Engineer's GitHub username"
-           },
+//         {
+//             type: 'input',
+//             name: 'email',
+//             message: "Enter your Engineer's email"
+//         },
 
-    ]).then(engineerInfo => {
-        // data for employee types 
+//         {
+//             type: 'input',
+//             name: 'userName',
+//             message: "Enter your Engineer's GitHub username"
+//            },
 
-        let {name, id, email, userName} = engineerInfo; 
-        let engineer = new Engineer (name, id, email, userName); 
+//     ]).then(engineerInfo => {
+//         // data for employee types 
 
-        teamArr.push(engineer);
-        console.log(engineer);
-    })
-];
+//         let {name, id, email, userName} = engineerInfo; 
+//         let engineer = new Engineer (name, id, email, userName); 
+
+//         teamArr.push(engineer);
+//         console.log(engineer);
+//     })
+// ];
 
 
 // const internInfo = () => [
@@ -115,7 +195,8 @@ const engineerInfo = () => [
 // ]
 
 
-managerQuestions();
+managerQuestions()
+    .then(addMembers)
 
 // addManager()
 //   .then(addEmployee)
