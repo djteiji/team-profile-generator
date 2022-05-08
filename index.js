@@ -47,6 +47,7 @@ const managerQuestions = () => [
 ];
 
 const employeeInfo = () => [
+    
     inquirer
     .prompt ([
         {
@@ -56,13 +57,13 @@ const employeeInfo = () => [
             choices: ['Engineer', 'Intern']
         },
   ]).then(choices => {
-    if (choices === 'Engineer') {
+    if ('Engineer') {
         
         engineerInfo();
     }
-    else {
-        internInfo();
-    }
+    // else {
+    //     internInfo();
+    // }
     
   })
 ];
@@ -107,11 +108,23 @@ const engineerInfo = () => [
 ];
 
 
-const internInfo = () => [
+// const internInfo = () => [
 
     
 
-]
+// ]
 
 
 managerQuestions();
+
+// addManager()
+//   .then(addEmployee)
+//   .then(teamArray => {
+//     return generateHTML(teamArray);
+//   })
+//   .then(pageHTML => {
+//     return writeFile(pageHTML);
+//   })
+//   .catch(err => {
+//  console.log(err);
+//   });
